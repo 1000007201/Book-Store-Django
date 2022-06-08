@@ -8,7 +8,7 @@ def validate_password(request, data):
     new_password = data.data.get('new_password')
     conf_new_password = data.data.get('conf_new_password')
     try:
-        if not username and not old_password and new_password and conf_new_password:
+        if not username or not old_password or new_password or conf_new_password:
             raise FieldError('You have to enter all fields', 404)
         if new_password != conf_new_password:
             raise FieldError('new Passwords are not matching', 404)
