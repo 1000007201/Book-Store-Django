@@ -10,6 +10,7 @@ def add_book_validator(data):
     try:
         book = Book.objects.filter(name=name).first()
         if not name or not author or not price or not quantity:
+            # if not any([name, ])
             raise NullField('You have to enter all values', 404)
         if book:
             raise BookAlreadyExist('Book already exist', 404)
