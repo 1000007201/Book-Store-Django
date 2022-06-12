@@ -96,4 +96,3 @@ class ActivateApiView(APIView):
         user.is_active = True
         user.save()
         return Response({'Message': 'Account is activated now you can login', 'Code': 200})
-
