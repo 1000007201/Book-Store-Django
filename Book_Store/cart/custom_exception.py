@@ -20,3 +20,7 @@ class TokenRequired(CustomBaseException):
 class BookNotExist(CustomBaseException):
     pass
 
+
+class CartNotExist(CustomBaseException):
+    pass
+
