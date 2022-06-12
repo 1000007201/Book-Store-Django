@@ -2,11 +2,12 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
 from .serializers import AddBookSerializer, GetBookSerializer, GetBookPageSerializer
 from .models import Book
-from .validate import add_book_validator
+from .validate import add_book_validator, check_superuser
 from rest_framework.response import Response
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
+from .jwt_token import token_decode
 
 
 class AddBookApiView(GenericAPIView):
@@ -15,6 +16,13 @@ class AddBookApiView(GenericAPIView):
     authentication_classes = ()
 
     def post(self, request):
+        user_id = token_decode(request)
+        if not type(user_id) == int:
+            return Response(user_id)
+        user_obj = check_superuser(user_id)
+        print(type(user_obj))
+        if type(user_obj) == dict:
+            return Response(user_obj)
         data = request.data
         data_dict = data.dict()
         # data_dict.pop('csrfmiddlewaretoken')
@@ -32,6 +40,8 @@ class AddBookApiView(GenericAPIView):
 
 
 class GetBookApiView(APIView):
+    authentication_classes = ()
+
     def get(self, request, id=None):
         if id:
             book = Book.objects.get(pk=id)
@@ -58,6 +68,13 @@ class GetBookApiView(APIView):
         return Response(data)
 
     def delete(self, request, id):
+        user_id = token_decode(request)
+        if not type(user_id) == int:
+            return Response(user_id)
+        user_obj = check_superuser(user_id)
+        print(type(user_obj))
+        if type(user_obj) == dict:
+            return Response(user_obj)
         book = Book.objects.get(pk=id)
         book.quantity = 0
         book.total_book_added = 0
@@ -65,6 +82,13 @@ class GetBookApiView(APIView):
         return Response({'Message': 'Book Deleted', 'Code': 200})
 
     def patch(self, request, id):
+        user_id = token_decode(request)
+        if not type(user_id) == int:
+            return Response(user_id)
+        user_obj = check_superuser(user_id)
+        print(type(user_obj))
+        if type(user_obj) == dict:
+            return Response(user_obj)
         book = Book.objects.get(pk=id)
         data = request.data
         serializer = GetBookSerializer(instance=book, data=data, partial=True)

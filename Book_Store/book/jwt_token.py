@@ -1,17 +1,7 @@
-from rest_framework_simplejwt.tokens import RefreshToken
 from jwt import decode
 from django.conf import settings
 from .utils import Utils
-from .custom_exceptions import TokenRequired
-
-
-def get_token(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        'access': str(refresh.access_token),
-        'refresh': str(refresh)
-    }
+from .custom_exception import TokenRequired
 
 
 def token_decode(request):
@@ -28,11 +18,10 @@ def token_decode(request):
             token = Utils.true_token(short_token)
         else:
             token = short_token
-        print(token)
         data = decode(token, settings.SECRET_KEY, 'HS256')
         user_id = data['user_id']
         return user_id
     except TokenRequired as exception:
         return exception.__dict__
     except Exception as e:
-        return {'Error': str(e), 'Code': 404}
+        return {'Error': str(e), 'Code': 404,}

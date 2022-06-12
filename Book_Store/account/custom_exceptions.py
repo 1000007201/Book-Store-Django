@@ -11,3 +11,7 @@ class FieldError(BaseCustomException):
 
 class UsernameNotExist(BaseCustomException):
     pass
+
+
+class TokenRequired(BaseCustomException):
+    pass

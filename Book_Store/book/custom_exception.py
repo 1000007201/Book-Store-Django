@@ -11,3 +11,11 @@ class BookAlreadyExist(CustomBaseException):
 
 class NullField(CustomBaseException):
     pass
+
+
+class NotSuperUser(CustomBaseException):
+    pass
+
+
+class TokenRequired(CustomBaseException):
+    pass

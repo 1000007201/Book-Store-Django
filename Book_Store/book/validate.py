@@ -1,6 +1,8 @@
 from .models import Book
-from .custom_exception import NullField, BookAlreadyExist
+from django.contrib.auth import get_user_model
+from .custom_exception import NullField, BookAlreadyExist, NotSuperUser
 
+User = get_user_model()
 
 def add_book_validator(data):
     name = data.get('name')
@@ -18,3 +20,18 @@ def add_book_validator(data):
         return exception.__dict__
     except BookAlreadyExist as exception:
         return exception.__dict__
+
+
+def check_superuser(user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        if not user.is_superuser:
+            raise NotSuperUser('Only Admin is allowed', 404)
+        return user
+    except NotSuperUser as exception:
+        return exception.__dict__
+    except Exception as e:
+        return dict({'Error': str(e), 'Code': 404})
+
+
+
