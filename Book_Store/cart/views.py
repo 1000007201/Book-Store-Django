@@ -35,7 +35,8 @@ class AddToCartAPIView(APIView):
             quantity = data_dict.get('quantity')
             user = user_authenticate(user_id)
             book = book_authenticate(book_id, quantity)
-            cart = Cart.objects.create(user=user, book=book, quantity=quantity)
+            total_price = book.price * quantity
+            cart = Cart.objects.create(user=user, book=book, quantity=quantity, total_price=total_price)
             cart.save()
             return Response({'Message': f'{book.name} added to cart', 'Code': 200})
         except BookNotExist as exception:
@@ -59,6 +60,7 @@ class UpdateCartApiView(APIView):
             quantity = serializer.data.get('quantity')
             cart = cart_authenticate(cart_id, quantity, user_id)
             cart.quantity = quantity
+            cart.total_price = cart.book.price * quantity
             cart.save()
             return Response({'Message': 'Cart updated', 'Code': 200})
         except CartNotExist as exception:
