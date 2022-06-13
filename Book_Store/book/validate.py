@@ -4,6 +4,7 @@ from .custom_exception import NullField, BookAlreadyExist, NotSuperUser
 
 User = get_user_model()
 
+
 def add_book_validator(data):
     name = data.get('name')
     author = data.get('author')
