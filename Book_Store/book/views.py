@@ -8,6 +8,13 @@ from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from .jwt_token import token_decode
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 
 class AddBookApiView(GenericAPIView):
@@ -42,6 +49,7 @@ class AddBookApiView(GenericAPIView):
 class GetBookApiView(APIView):
     authentication_classes = ()
 
+    @method_decorator(cache_page(CACHE_TTL))
     def get(self, request, id=None):
         if id:
             book = Book.objects.get(pk=id)
@@ -65,6 +73,7 @@ class GetBookApiView(APIView):
             data['prev_page'] = prev_page_url
         data['Data'] = serializer.data
         data['code'] = 200
+        print('DATA')
         return Response(data)
 
     def delete(self, request, id):
