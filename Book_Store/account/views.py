@@ -7,6 +7,7 @@ from django.urls import reverse
 from .utils import Utils
 from .validators import validate_password, validate_login, validate_register
 from django.utils.decorators import method_decorator
+from rest_framework.generics import GenericAPIView
 
 User = get_user_model()
 
@@ -38,9 +39,10 @@ class RegistrationApiView(APIView):
              'activate_link': surl})
 
 
-class LoginApiView(APIView):
+class LoginApiView(GenericAPIView):
     permission_classes = ()
     authentication_classes = ()
+    serializer_class = LoginSerializers
 
     def post(self, request):
         data = request.data
