@@ -2,9 +2,9 @@ from rest_framework.views import APIView, Response
 from cart.models import Cart
 from .models import Order
 from .serializers import CheckoutSerializer, GetOrderSerializer
-from .jwt_token import token_required
+from common.jwt_token import token_required
 from django.contrib.auth.models import User
-from .custom_exception import UserNotExist, BookNotExist, TokenRequired
+from common.custom_exception import UserNotExist, BookNotExist, TokenRequired
 from django.utils.decorators import method_decorator
 
 

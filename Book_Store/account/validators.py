@@ -1,4 +1,4 @@
-from .custom_exceptions import FieldError
+from common.custom_exception import FieldError
 from django.contrib.auth import authenticate
 
 

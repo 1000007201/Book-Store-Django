@@ -1,11 +1,12 @@
 from rest_framework.views import APIView, Response
 from .serializers import RegistrationSerializer, LoginSerializers, ResetPassSerializer
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from .jwt_token import get_token, token_decode
+from common.jwt_token import get_token, token_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import Utils
 from .validators import validate_password, validate_login, validate_register
+from django.utils.decorators import method_decorator
 
 User = get_user_model()
 
@@ -88,10 +89,12 @@ class GetAllUser(APIView):
 
 
 class ActivateApiView(APIView):
-    def get(self, request):
-        user_id = token_decode(request)
-        if not type(user_id) == int:
-            return Response(user_id)
+
+    @method_decorator(token_required)
+    def get(self, request, user_id):
+        # user_id = token_decode(request)
+        # if not type(user_id) == int:
+        #     return Response(user_id)
         user = User.objects.get(pk=user_id)
         user.is_active = True
         user.save()

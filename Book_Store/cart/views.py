@@ -1,9 +1,9 @@
 from rest_framework.views import APIView, Response
 from .serializers import AddToCartSerializer, UpdateCartSerializer, GetCartSerializer
-from .jwt_token import token_required
+from common.jwt_token import token_required
 from .validate import user_authenticate, book_authenticate, cart_authenticate
 from .models import Cart
-from .custom_exception import BookNotExist, UserNotExist, CartNotExist
+from common.custom_exception import BookNotExist, UserNotExist, CartNotExist
 from django.utils.decorators import method_decorator
 
 

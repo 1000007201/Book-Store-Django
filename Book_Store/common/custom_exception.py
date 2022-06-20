@@ -19,3 +19,19 @@ class NotSuperUser(CustomBaseException):
 
 class TokenRequired(CustomBaseException):
     pass
+
+
+class UserNotExist(CustomBaseException):
+    pass
+
+
+class BookNotExist(CustomBaseException):
+    pass
+
+
+class CartNotExist(CustomBaseException):
+    pass
+
+
+class FieldError(CustomBaseException):
+    pass

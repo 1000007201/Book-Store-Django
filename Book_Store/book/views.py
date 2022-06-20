@@ -7,12 +7,11 @@ from rest_framework.response import Response
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
-from .jwt_token import token_decode
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-
+from common.jwt_token import token_required
 
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
@@ -22,10 +21,11 @@ class AddBookApiView(GenericAPIView):
     permission_classes = ()
     authentication_classes = ()
 
-    def post(self, request):
-        user_id = token_decode(request)
-        if not type(user_id) == int:
-            return Response(user_id)
+    @method_decorator(token_required)
+    def post(self, request, user_id):
+        # user_id = token_decode(request)
+        # if not type(user_id) == int:
+        #     return Response(user_id)
         user_obj = check_superuser(user_id)
         print(type(user_obj))
         if type(user_obj) == dict:
@@ -76,10 +76,11 @@ class GetBookApiView(APIView):
         print('DATA')
         return Response(data)
 
-    def delete(self, request, id):
-        user_id = token_decode(request)
-        if not type(user_id) == int:
-            return Response(user_id)
+    @method_decorator(token_required)
+    def delete(self, request, user_id, id):
+        # user_id = token_decode(request)
+        # if not type(user_id) == int:
+        #     return Response(user_id)
         user_obj = check_superuser(user_id)
         print(type(user_obj))
         if type(user_obj) == dict:
@@ -90,10 +91,11 @@ class GetBookApiView(APIView):
         book.save()
         return Response({'Message': 'Book Deleted', 'Code': 200})
 
-    def patch(self, request, id):
-        user_id = token_decode(request)
-        if not type(user_id) == int:
-            return Response(user_id)
+    @method_decorator(token_required)
+    def patch(self, request, user_id, id):
+        # user_id = token_decode(request)
+        # if not type(user_id) == int:
+        #     return Response(user_id)
         user_obj = check_superuser(user_id)
         print(type(user_obj))
         if type(user_obj) == dict:

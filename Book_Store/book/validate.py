@@ -1,6 +1,6 @@
 from .models import Book
 from django.contrib.auth import get_user_model
-from .custom_exception import NullField, BookAlreadyExist, NotSuperUser
+from common.custom_exception import NullField, BookAlreadyExist, NotSuperUser
 
 User = get_user_model()
 

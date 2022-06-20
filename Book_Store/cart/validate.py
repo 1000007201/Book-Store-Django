@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from .custom_exception import UserNotExist, BookNotExist, CartNotExist
+from common.custom_exception import UserNotExist, BookNotExist, CartNotExist
 from book.models import Book
 from .models import Cart
 
