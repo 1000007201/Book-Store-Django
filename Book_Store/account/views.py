@@ -8,6 +8,7 @@ from .utils import Utils
 from .validators import validate_password, validate_login, validate_register
 from django.utils.decorators import method_decorator
 from rest_framework.generics import GenericAPIView
+from common.task import sleep_task
 
 User = get_user_model()
 
@@ -30,6 +31,7 @@ class RegistrationApiView(APIView):
         domain = get_current_site(request).domain
         relative_link = reverse('activate')
         surl = 'http://' + domain + relative_link + '?token=' + short_token
+        sleep_task.delay(5)
         # email_body = f'Hii {user.username} Use below link to activate your account \n{surl}'
         # data = {'email_body': email_body, 'subject': 'Activate your Account', 'email': user.email}
         # Utils.send_mail(data)
