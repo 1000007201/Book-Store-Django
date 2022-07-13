@@ -1,3 +1,4 @@
+from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView, Response
 from .serializers import AddToCartSerializer, UpdateCartSerializer, GetCartSerializer
 from common.jwt_token import token_required
@@ -7,9 +8,9 @@ from common.custom_exception import BookNotExist, UserNotExist, CartNotExist
 from django.utils.decorators import method_decorator
 
 
-class AddToCartAPIView(APIView):
+class AddToCartAPIView(GenericAPIView):
     authentication_classes = ()
-
+    serializer_class = GetCartSerializer
     @method_decorator(token_required)
     def get(self, request, user_id):
         try:
@@ -50,9 +51,9 @@ class AddToCartAPIView(APIView):
             return Response({'Error': str(e), 'Code': 404})
 
 
-class UpdateCartApiView(APIView):
+class UpdateCartApiView(GenericAPIView):
     authentication_classes = ()
-
+    serializer_class = UpdateCartSerializer
     @method_decorator(token_required)
     def patch(self, request, user_id, cart_id):
         try:

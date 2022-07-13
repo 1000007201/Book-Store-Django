@@ -9,5 +9,4 @@ urlpatterns = [
     path('get/', GetBookApiView.as_view(), name='get_book')
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

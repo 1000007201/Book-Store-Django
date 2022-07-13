@@ -46,8 +46,9 @@ class AddBookApiView(GenericAPIView):
         return Response({'Message': 'Book added', 'Code': 200})
 
 
-class GetBookApiView(APIView):
+class GetBookApiView(GenericAPIView):
     authentication_classes = ()
+    serializer_class = GetBookSerializer
 
     @method_decorator(cache_page(CACHE_TTL))
     def get(self, request, id=None):
@@ -61,7 +62,7 @@ class GetBookApiView(APIView):
         surl = 'http://'+domain+abs_url
         print(surl)
         page_no = request.query_params.get('page')
-        paginator = Paginator(book, 2)
+        paginator = Paginator(book, 12)
         page_obj = paginator.get_page(page_no)
         serializer = GetBookPageSerializer(page_obj, many=True)
         data = {}

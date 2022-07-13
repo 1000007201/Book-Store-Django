@@ -9,29 +9,34 @@ from .validators import validate_password, validate_login, validate_register
 from django.utils.decorators import method_decorator
 from rest_framework.generics import GenericAPIView
 from common.task import sleep_task
+import logging
 
 User = get_user_model()
 
+logger = logging.getLogger(__file__)
 
-class RegistrationApiView(APIView):
+
+class RegistrationApiView(GenericAPIView):
     permission_classes = ()
     authentication_classes = ()
+    serializer_class = RegistrationSerializer
 
     def post(self, request):
         data = request.data
         serializer = RegistrationSerializer(data=data)
         serializer.is_valid(raise_exception=True)
+        name = serializer.data.get('first_name')
         username = serializer.data.get('username')
         email = serializer.data.get('email')
         password = serializer.data.get('password')
-        user = User.objects.create_user(username=username, email=email, password=password, is_active=False)
+        user = User.objects.create_user(first_name=name, username=username, email=email, password=password)
         user.save()
         token = get_token(user).get('access')
         short_token = Utils.token_short(token)
         domain = get_current_site(request).domain
         relative_link = reverse('activate')
         surl = 'http://' + domain + relative_link + '?token=' + short_token
-        sleep_task.delay(5)
+        # sleep_task.delay(5)
         # email_body = f'Hii {user.username} Use below link to activate your account \n{surl}'
         # data = {'email_body': email_body, 'subject': 'Activate your Account', 'email': user.email}
         # Utils.send_mail(data)
@@ -53,11 +58,13 @@ class LoginApiView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         username = serializer.data.get('username')
         password = serializer.data.get('password')
+        print(username, password)
         user = authenticate(request, username=username, password=password)
         if not user:
             return Response({'Error': 'Check your email and password', 'Code': 401})
         login(request, user)
         token = get_token(user)
+        logger.info(f'{username} is logged in')
         return Response({'Message': 'User Logged in', 'Code': 200, 'token': token})
 
 
@@ -67,8 +74,9 @@ class LogoutApiView(APIView):
         return Response({'Message': 'Logged Out', 'Code': 200})
 
 
-class ResetPassApiView(APIView):
+class ResetPassApiView(GenericAPIView):
     authentication_classes = ()
+    serializer_class = ResetPassSerializer
 
     def post(self, request):
         data = request.data
